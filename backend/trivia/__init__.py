@@ -1,17 +1,18 @@
 import os
+import time
 
 from flask import Flask, request
-from blueprints import manage_questions
 
 
 # application factory
 def create_app(test_config=None):
 
-    # create the Flask instance; __name__ is the name of the current Python module; instance_relative_config=True
-    # tells the app that configuration files are relative to the instance folder
-    app = Flask(__name__, instance_relative_config=True)
+    # create the Flask instance;
+    # instance_relative_config=True tells the app that configuration files are relative to the instance folder
+    app = Flask('trivia', instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',   # TODO: override with a random value when deploying
+        # DATABASE=os.path.join(app.instance_path, 'test_db.sqlite'),
     )
 
     if test_config is None:
@@ -27,9 +28,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/')
+    @app.route('/hello-world')
     def hello_world():
         return 'Hello, World'
 
+    # Route for testing connection between React frontend and api
+    @app.route('/time')
+    def get_current_time():
+        return {'time': time.time()}
 
     return app
