@@ -14,5 +14,4 @@ py==1.10.0
 pyparsing==2.4.7
 pytest==6.2.2
 toml==0.10.2
--e git+https://github.com/mgwc/live-trivia.git@6d8c0bb23ea7f4c1d58f6077aaadd723c2e07088#egg=trivia&subdirectory=backend
 Werkzeug==1.0.1
