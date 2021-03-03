@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci   # npm install, but for CI environments
+      - run: npm install   # install the package and packages it depends on
       - run: npm run build --if-present   # creates a production build
       - run: npm test
     
