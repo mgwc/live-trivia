@@ -20,9 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     
     # Sets default working directory for all steps in job
-    #defaults:
-    #  run:
-    #    working-directory: /frontend
+    defaults:
+      run:
+        working-directory: frontend
     
     # Test multiple versions of node
     strategy:
