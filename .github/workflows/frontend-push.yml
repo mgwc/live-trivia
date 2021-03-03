@@ -17,24 +17,26 @@ jobs:
   # This workflow contains two jobs: one called build and one called test
   build:
     # The type of runner that the job will run on
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    
+    # Test multiple versions of node
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Install the node software package
-      - name: install node
-        run: actions/setup-node@v1
-
-      - name: install node dependencies
-        working-directory: frontend   # Have to specify where to find package.json
-        run: npm install    # Install node dependencies defined in package.json
-  
-  test:
-    runs-on: windows-latest
-    steps:
+      # Configure the specified Node.js version on the runner
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version $ {{ matrix.node-version }}
+      - run: npm ci   # npm install, but for CI environments
+      - run: npm run build --if-present   # creates a production build
+      - run: npm test
       - uses: actions/checkout@v2
       - name: unit-test
         working-directory: frontend
