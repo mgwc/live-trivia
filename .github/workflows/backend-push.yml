@@ -4,7 +4,8 @@ name: backend-push
 on:
   # Triggers the workflow on pushes to any branch
   push:
-    branches: 
+    branches:
+      - '**'
       - '!main'
     paths:
       - 'backend/**'
