@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+// Adding a comment for testing purposes
+
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
 
