@@ -22,7 +22,7 @@ jobs:
     # Sets default working directory for all steps in job
     defaults:
       run:
-        working-directory: /backend
+        working-directory: backend
     
     strategy:
       matrix:
