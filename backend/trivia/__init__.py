@@ -12,7 +12,7 @@ def create_app(test_config=None):
     app = Flask('trivia', instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',   # TODO: override with a random value when deploying
-        # DATABASE=os.path.join(app.instance_path, 'test_db.sqlite'),
+        DATABASE=os.path.join(app.instance_path, 'trivia.sqlite'),
     )
 
     if test_config is None:
@@ -36,5 +36,8 @@ def create_app(test_config=None):
     @app.route('/time')
     def get_current_time():
         return {'time': time.time()}
+
+    from . import db
+    db.init_app(app)
 
     return app
