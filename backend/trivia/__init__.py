@@ -2,24 +2,25 @@ import os
 import time
 
 from flask import Flask, request
-from config import Config
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
-
-db = SQLAlchemy()
-migrate = Migrate()
 
 
 # application factory
-def create_app(config_class=None):
+def create_app(test_config=None):
 
-    # create the Flask instance, using configuration object defined in config module
-    app = Flask('trivia')
-    app.config.from_object(config_class)
+    # create the Flask instance;
+    # instance_relative_config=True tells the app that configuration files are relative to the instance folder
+    app = Flask('trivia', instance_relative_config=True)
+    app.config.from_mapping(
+        SECRET_KEY='dev',   # TODO: override with a random value when deploying
+        DATABASE=os.path.join(app.instance_path, 'trivia.sqlite'),
+    )
 
-    db.init_app(app)
-    migrate.init_app(app, db)
+    if test_config is None:
+        # load the instance config, if it exists, when not testing; this can be used to set a real SECRET_KEY
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        # load the test config if passed in
+        app.config.from_mapping(test_config)
 
     # ensure the instance folder exists
     try:
@@ -36,7 +37,7 @@ def create_app(config_class=None):
     def get_current_time():
         return {'time': time.time()}
 
-
-    from trivia import models
+    from . import db
+    db.init_app(app)
 
     return app
