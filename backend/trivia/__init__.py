@@ -36,4 +36,7 @@ def create_app(config_class=None):
     def get_current_time():
         return {'time': time.time()}
 
+
+    from trivia import models
+
     return app
