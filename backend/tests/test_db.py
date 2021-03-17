@@ -3,7 +3,7 @@ import sqlite3
 import pytest
 from trivia.db import get_db
 
-# Note, these tests taken from Flask tutorial/documentation
+# Note, some of these tests taken from Flask tutorial/documentation
 
 
 def test_get_close_db(app):     # passing app fixture from conftest.py as argument

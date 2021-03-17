@@ -11,7 +11,7 @@ VALUES
     (10, 'The lyrics of the Pixies song ""Where Is My Mind?"" were inspired by what outdoor activity?', 'Scuba diving', 'Music', 'Hard'),
     (7, 'In what musical does the cast sing about 525,600 minutes?', 'Rent', 'Arts & Entertainment', 'Easy'),
     (8, 'Nicaragua and Dominica are the only two countries to have what color in their flag?', 'Purple', 'General Knowledge', 'Easy'),
-    (9, 'In what game might you collect a hand containing a Pong', 'Mah Jong', 'General Knowledge', 'Medium'),
+    (9, 'In what game might you collect a hand containing a Pong?', 'Mah Jong', 'General Knowledge', 'Medium'),
     (11, 'Caviar is a food consisting of salt-cured roe that is traditionally produced by what kind of fish?', 'Sturgeon', 'Food', 'Medium'),
     (12, 'Name two of the five countries that border Kenya', 'Tanzania, Uganda, South Sudan, Ethiopia, Somalia', 'Geography', 'Medium'),
     (13, 'The acronym NIMBY is used to refer to people who oppose local development projects. What does NIMBY stand for?',
