@@ -1,7 +1,8 @@
 import functools
+import logging
 
 from flask import (
-    Blueprint, jsonify, json, request
+    Blueprint, jsonify, json, request, current_app
 )
 from trivia.db import get_db
 
@@ -45,15 +46,18 @@ def get_single_question(qid):
 # Route for viewing individual question
 @bp.route('/edit/<int:qid>', methods=['PUT'])
 def edit_question(qid):
+    current_app.logger.info("Received request to edit_question")
     question_text = request.form['question_text']
     answer_text = request.form['answer_text']
     image_location = request.form['image_location']
     category = request.form['category']
     difficulty = request.form['difficulty']
+    current_app.logger.info("Another log message")
 
     db = get_db()
     cur = db.cursor()
-    rows = cur.execute('''
+    current_app.logger.info("Still here")
+    cur.execute('''
             UPDATE question 
             SET question_text = {}, 
                 answer_text = {}, 
@@ -64,6 +68,17 @@ def edit_question(qid):
             ORDER BY id ASC
             LIMIT 10
             '''.format(question_text, answer_text, image_location, category, difficulty, qid))
+    current_app.logger.info("Made it past UPDATE statement")
+    db.commit()
+
+    new_row = cur.execute('''
+                SELECT id, question_text, answer_text, image_location, category, difficulty
+                FROM question
+                WHERE id = {}
+                ''').format(qid).fetchone()
+    current_app.logger.info('Retrieved new_row = %s', tuple(new_row))
+
+    return jsonify(tuple(new_row))
 
 '''
     SELECT id, question_text, answer_text, image_location, category, difficulty

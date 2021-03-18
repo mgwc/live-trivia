@@ -1,6 +1,8 @@
 import os
 import time
-
+import logging, sys
+from logging import StreamHandler
+from logging.handlers import RotatingFileHandler
 from flask import Flask, request
 
 
@@ -27,6 +29,26 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    # Configure logging
+    if not app.debug:
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = RotatingFileHandler('logs/trivia.log', maxBytes=10240, backupCount=10)
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+
+        stream_handler = StreamHandler(sys.stdout)
+        stream_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        stream_handler.setLevel(logging.INFO)
+        app.logger.addHandler(stream_handler)
+
+        app.logger.setLevel(logging.INFO)
+        # app.logger.info('Trivia startup')
 
     @app.route('/hello-world')
     def hello_world():

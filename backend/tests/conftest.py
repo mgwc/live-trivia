@@ -1,5 +1,6 @@
-import os
-import tempfile
+import os, tempfile, logging
+import sys
+from logging.handlers import RotatingFileHandler
 
 import pytest
 from trivia import create_app
@@ -31,9 +32,6 @@ def app():
 
 @pytest.fixture
 def client(app):
-    question_text = "Which of the earths poles is home to penguins?"
-    answer_text = "The south pole"
-
     return app.test_client()        # create a test client for app
 
 

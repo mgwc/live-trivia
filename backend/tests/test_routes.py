@@ -34,7 +34,12 @@ def test_edit_question(client):
     answer_text = "The North Pole"
     category = "Biology"
     difficulty = "Easy"
-    client.put()
+    new_response = client.put('/questions/edit/3', json={'question_text': question_text, 'answer_text': answer_text,
+                                                         'category': category, 'difficulty': difficulty})
+    new_response_json = new_response.get_json()
+    assert (new_response_json[0] == 3 and new_response_json[1] == "Which of the earth's poles is home to polar bears?"
+            and new_response_json[2] == "The North Pole" and new_response_json[3] == "Biology"
+            and new_response_json[4] == "Easy")
 
 
 def test_hello_world(client):
