@@ -43,40 +43,62 @@ def get_single_question(qid):
     return jsonify(tuple(row))
 
 
-# Route for viewing individual question
-@bp.route('/edit/<int:qid>', methods=['PUT'])
-def edit_question(qid):
-    current_app.logger.info("Received request to edit_question")
-    question_text = request.form['question_text']
-    answer_text = request.form['answer_text']
-    image_location = request.form['image_location']
-    category = request.form['category']
-    difficulty = request.form['difficulty']
-    current_app.logger.info("Another log message")
+# Route for adding question to database
+@bp.route('/add', methods=['POST'])
+def add_question():
+    question_text = request.json['question_text']
+    answer_text = request.json.get('answer_text')
+    image_location = request.json.get('image_location')
+    category = request.json['category']
+    difficulty = request.json['difficulty']
 
     db = get_db()
     cur = db.cursor()
-    current_app.logger.info("Still here")
+    cur.execute('''
+        INSERT INTO question
+        VALUES(?, ?, ?, ?, ?, ?)
+    ''', (None, question_text, answer_text, image_location, category, difficulty))
+    db.commit()
+
+    current_app.logger.info('Committed new row to db')
+    new_row = cur.execute('''
+        SELECT id, question_text
+        FROM question
+        WHERE id = ?
+    ''', (cur.lastrowid,)).fetchone()
+    current_app.logger.info(str(tuple(new_row)))
+
+    return jsonify(tuple(new_row))
+
+
+# Route for viewing individual question
+@bp.route('/edit/<int:qid>', methods=['PUT'])
+def edit_question(qid):
+    question_text = request.json['question_text']
+    current_app.logger.info("Question_text = " + question_text + ", type = " + str(type(question_text)))
+    answer_text = request.json.get('answer_text')
+    image_location = request.json.get('image_location')
+    category = request.json['category']
+    difficulty = request.json['difficulty']
+
+    db = get_db()
+    cur = db.cursor()
     cur.execute('''
             UPDATE question 
-            SET question_text = {}, 
-                answer_text = {}, 
-                image_location = {}, 
-                category = {}, 
-                difficulty = {}
-            WHERE id == {}
-            ORDER BY id ASC
-            LIMIT 10
-            '''.format(question_text, answer_text, image_location, category, difficulty, qid))
-    current_app.logger.info("Made it past UPDATE statement")
+            SET question_text = ?, 
+                answer_text = ?, 
+                image_location = ?, 
+                category = ?, 
+                difficulty = ?
+            WHERE id == ?
+            ''', (question_text, answer_text, image_location, category, difficulty, qid))
     db.commit()
 
     new_row = cur.execute('''
                 SELECT id, question_text, answer_text, image_location, category, difficulty
                 FROM question
-                WHERE id = {}
-                ''').format(qid).fetchone()
-    current_app.logger.info('Retrieved new_row = %s', tuple(new_row))
+                WHERE id = ?
+                ''', (qid,)).fetchone()
 
     return jsonify(tuple(new_row))
 

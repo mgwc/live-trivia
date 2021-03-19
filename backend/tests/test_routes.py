@@ -12,18 +12,25 @@ def test_get_all_questions(client):
 def test_get_page_of_questions(client):
     response = client.get('/questions/')
     response_json = response.get_json()
-    print("response_json = " + str(response_json))
     response_two = client.get('/questions/2')
     response_two_json = response_two.get_json()
-    print("response_two_json = " + str(response_two_json))
     assert response_json[0][1] != response_two_json[1][1]
 
 
 def test_get_single_question(client):
     response = client.get('/questions/question/9')
     response_json = response.get_json()
-    print("response_json = " + str(response_json))
     assert response_json[1] == "In what game might you collect a hand containing a Pong?"
+
+
+def test_add_question(client):
+    question_text = "Who was Time magazine's unusual choice for Person of the Year in 2006?"
+    answer_text = "You"
+    category = "Pop Culture"
+    difficulty = "Hard"
+    added_row_response = client.post('/questions/add', json={'question_text': question_text, 'answer_text': answer_text,
+                                                             'category': category, 'difficulty': difficulty})
+    assert added_row_response.get_json()[1] == "Who was Time magazine's unusual choice for Person of the Year in 2006?"
 
 
 def test_edit_question(client):
@@ -37,9 +44,12 @@ def test_edit_question(client):
     new_response = client.put('/questions/edit/3', json={'question_text': question_text, 'answer_text': answer_text,
                                                          'category': category, 'difficulty': difficulty})
     new_response_json = new_response.get_json()
-    assert (new_response_json[0] == 3 and new_response_json[1] == "Which of the earth's poles is home to polar bears?"
-            and new_response_json[2] == "The North Pole" and new_response_json[3] == "Biology"
-            and new_response_json[4] == "Easy")
+    assert new_response_json[0] == 3
+    assert new_response_json[1] == "Which of the earth's poles is home to polar bears?"
+    assert new_response_json[2] == "The North Pole"
+    assert new_response_json[3] is None
+    assert new_response_json[4] == "Biology"
+    assert new_response_json[5] == "Easy"
 
 
 def test_hello_world(client):
