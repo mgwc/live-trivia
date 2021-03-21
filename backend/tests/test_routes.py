@@ -33,6 +33,10 @@ def test_add_question(client):
     assert added_row_response.get_json()[1] == "Who was Time magazine's unusual choice for Person of the Year in 2006?"
 
 
+def test_add_duplicate_question(client):
+    
+
+
 def test_edit_question(client):
     initial_response = client.get('/questions/question/3')
     initial_response_json = initial_response.get_json()
@@ -50,6 +54,24 @@ def test_edit_question(client):
     assert new_response_json[3] is None
     assert new_response_json[4] == "Biology"
     assert new_response_json[5] == "Easy"
+
+
+def test_delete_question(client):
+    question_text = "This is a question to be deleted"
+    answer_text = "Answer"
+    category = "Pop Culture"
+    difficulty = "Hard"
+    added_row_response = client.post('/questions/add', json={'question_text': question_text, 'answer_text': answer_text,
+                                                             'category': category, 'difficulty': difficulty})
+    qid = int(added_row_response.get_json()[0])
+    print("qid = " + str(qid))
+    q_for_deletion_response = client.get('/questions/question/{}'.format(qid))
+    print(q_for_deletion_response.get_json())
+    assert q_for_deletion_response.get_json()[1] == "This is a question to be deleted"
+    client.get('/questions/delete/{}'.format(qid))
+    get_deleted_q_response = client.get('/questions/question/'.format(qid))
+    print(get_deleted_q_response)
+    assert get_deleted_q_response.status_code == 404
 
 
 def test_hello_world(client):

@@ -1,9 +1,7 @@
-import functools
-import logging
-
 from flask import (
-    Blueprint, jsonify, json, request, current_app
+    Blueprint, jsonify, request, current_app
 )
+
 from trivia.db import get_db
 
 bp = Blueprint('questions', __name__, url_prefix='/questions')  # (name, where blueprint is defined, url prefix)
@@ -46,6 +44,7 @@ def get_single_question(qid):
 # Route for adding question to database
 @bp.route('/add', methods=['POST'])
 def add_question():
+    current_app.logger.info("Received request to /add")
     question_text = request.json['question_text']
     answer_text = request.json.get('answer_text')
     image_location = request.json.get('image_location')
@@ -102,15 +101,16 @@ def edit_question(qid):
 
     return jsonify(tuple(new_row))
 
-'''
-    SELECT id, question_text, answer_text, image_location, category, difficulty
-    FROM question
-    WHERE id NOT IN (SELECT id 
-                     FROM question
-                     ORDER BY id ASC
-                     LIMIT 20)
-    ORDER BY id ASC
-    LIMIT 20
-'''
 
+# Route for deleting individual question
+@bp.route('/delete/<int:qid>', methods=['DELETE'])
+def delete_question(qid):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute('''
+                DELETE from question 
+                WHERE id == ?
+                ''', (qid,))
+    db.commit()
+    return ""
 

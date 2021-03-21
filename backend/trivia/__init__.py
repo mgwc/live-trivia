@@ -1,9 +1,11 @@
+import logging
 import os
+import sys
 import time
-import logging, sys
 from logging import StreamHandler
 from logging.handlers import RotatingFileHandler
-from flask import Flask, request
+
+from flask import Flask
 
 
 # application factory
@@ -48,7 +50,7 @@ def create_app(test_config=None):
         app.logger.addHandler(stream_handler)
 
         app.logger.setLevel(logging.INFO)
-        # app.logger.info('Trivia startup')
+        #app.logger.info('Trivia startup')
 
     @app.route('/hello-world')
     def hello_world():
