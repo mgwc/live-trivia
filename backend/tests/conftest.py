@@ -1,5 +1,6 @@
-import os
-import tempfile
+import os, tempfile, logging
+import sys
+from logging.handlers import RotatingFileHandler
 
 import pytest
 from trivia import create_app

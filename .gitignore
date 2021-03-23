@@ -6,7 +6,8 @@ venv/
 /venv
 venv
 
-# testing
+# testing and logs
+backend/logs
 frontend/coverage
 
 # production
