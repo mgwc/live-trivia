@@ -64,7 +64,11 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
+    # Register blueprints with app
     from trivia.blueprints import questions
     app.register_blueprint(questions.bp)
+
+    # Register error handlers with app
+
 
     return app

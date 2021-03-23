@@ -1,3 +1,6 @@
+import sqlite3
+import sys
+
 from flask import (
     Blueprint, jsonify, request, current_app
 )
@@ -45,6 +48,7 @@ def get_single_question(qid):
 @bp.route('/add', methods=['POST'])
 def add_question():
     current_app.logger.info("Received request to /add")
+
     question_text = request.json['question_text']
     answer_text = request.json.get('answer_text')
     image_location = request.json.get('image_location')
@@ -53,11 +57,17 @@ def add_question():
 
     db = get_db()
     cur = db.cursor()
-    cur.execute('''
-        INSERT INTO question
-        VALUES(?, ?, ?, ?, ?, ?)
-    ''', (None, question_text, answer_text, image_location, category, difficulty))
-    db.commit()
+    try:
+        cur.execute('''
+            INSERT INTO question
+            VALUES(?, ?, ?, ?, ?, ?)
+        ''', (None, question_text, answer_text, image_location, category, difficulty))
+        db.commit()
+    except sqlite3.Error as e:
+        # handle error
+        type, value, traceback = sys.exc_info()
+        current_app.logger.error("Caught exception at cur.execute in add_question: {}, {}, {}".format(type, value, traceback))
+        pass
 
     current_app.logger.info('Committed new row to db')
     new_row = cur.execute('''
@@ -65,8 +75,9 @@ def add_question():
         FROM question
         WHERE id = ?
     ''', (cur.lastrowid,)).fetchone()
-    current_app.logger.info(str(tuple(new_row)))
+    current_app.logger.info("new row = " + str(tuple(new_row)))
 
+    # return id of new row
     return jsonify(tuple(new_row))
 
 
@@ -107,10 +118,15 @@ def edit_question(qid):
 def delete_question(qid):
     db = get_db()
     cur = db.cursor()
-    cur.execute('''
-                DELETE from question 
-                WHERE id == ?
-                ''', (qid,))
-    db.commit()
+    try:
+        cur.execute('''
+                    DELETE from question 
+                    WHERE id == ?
+                    ''', (qid,))
+        db.commit()
+    except sqlite3.Error as e:
+        # handle error
+        type, value, traceback = sys.exc_info()
+        current_app.logger.error("Caught exception at cur.execute in add_question: {}, {}, {}".format(type, value, traceback))
     return ""
 

@@ -30,11 +30,24 @@ def test_add_question(client):
     difficulty = "Hard"
     added_row_response = client.post('/questions/add', json={'question_text': question_text, 'answer_text': answer_text,
                                                              'category': category, 'difficulty': difficulty})
+    print("added_row_response = " + str(added_row_response.get_json()))
     assert added_row_response.get_json()[1] == "Who was Time magazine's unusual choice for Person of the Year in 2006?"
 
 
-def test_add_duplicate_question(client):
-    
+# def test_add_duplicate_question(client):
+#     question_text = "Who was Time magazine's unusual choice for Person of the Year in 2006?"
+#     answer_text = "You"
+#     category = "Pop Culture"
+#     difficulty = "Hard"
+#     added_row_response = client.post('/questions/add', json={'question_text': question_text, 'answer_text': answer_text,
+#                                                              'category': category, 'difficulty': difficulty})
+#     duplicate_row_response = client.post('/questions/add', json={'question_text': question_text, 'answer_text': answer_text,
+#                                                                  'category': category, 'difficulty': difficulty})
+#     print(duplicate_row_response.get_json()[0])
+#     all_questions_response = client.get("/questions/2").get_json()
+#     print(all_questions_response)
+#     assert True is False
+#     #assert duplicate_row_response == ""
 
 
 def test_edit_question(client):
