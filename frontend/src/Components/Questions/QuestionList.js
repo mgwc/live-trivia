@@ -1,9 +1,10 @@
 import React from "react"
-import ReactDOM from "react-dom"
+
+import Table from "../Generic/Table"
 
 class QuestionList extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
   }
 
@@ -16,8 +17,13 @@ class QuestionList extends React.Component {
   }
 
   render() {
+
+    const headings = ["Question", "Answer", "Category", "Difficulty"]
+
     return (
-      // Testing if change is tracked
+      <div>
+        <Table headings={headings} />
+      </div>
     )
   }
 }
