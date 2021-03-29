@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS game_question;
 
 CREATE TABLE question (
     id INTEGER PRIMARY KEY,
-    question_text TEXT NOT NULL,
+    question_text TEXT UNIQUE NOT NULL,
     answer_text TEXT,
     image_location TEXT,
     category TEXT NOT NULL,

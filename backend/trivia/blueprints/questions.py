@@ -2,7 +2,7 @@ import sqlite3
 import sys
 
 from flask import (
-    Blueprint, jsonify, request, current_app
+    Blueprint, jsonify, json, request, current_app
 )
 
 from trivia.db import get_db
@@ -14,8 +14,10 @@ bp = Blueprint('questions', __name__, url_prefix='/questions')  # (name, where b
 @bp.route('/', methods=['GET'])
 @bp.route('/<int:page>', methods=['GET'])
 def all_questions(page=1):
-    print("page = " + str(page))
+    current_app.logger.info("Received request to /questions/")
+    current_app.logger.info("page = " + str(page))
     db = get_db()
+    current_app.logger.info("db = " + str(db))
     cur = db.cursor()
     num_skipped_results = (page - 1) * 10
     rows = cur.execute('''
@@ -28,7 +30,8 @@ def all_questions(page=1):
         ORDER BY id ASC
         LIMIT 10
         '''.format(num_skipped_results)).fetchall()
-    return jsonify([tuple(row) for row in rows])
+    current_app.logger.info("num rows selected from db = " + str(len(rows)))
+    return jsonify([dict(row) for row in rows])
 
 
 # Route for data on single question
@@ -71,13 +74,13 @@ def add_question():
 
     current_app.logger.info('Committed new row to db')
     new_row = cur.execute('''
-        SELECT id, question_text
+        SELECT id, question_text, answer_text, image_location, category, difficulty
         FROM question
         WHERE id = ?
     ''', (cur.lastrowid,)).fetchone()
     current_app.logger.info("new row = " + str(tuple(new_row)))
 
-    # return id of new row
+    # return new row data
     return jsonify(tuple(new_row))
 
 
@@ -128,5 +131,6 @@ def delete_question(qid):
         # handle error
         type, value, traceback = sys.exc_info()
         current_app.logger.error("Caught exception at cur.execute in add_question: {}, {}, {}".format(type, value, traceback))
-    return ""
+        return 'Database operation failed', 500
+    return "Success"
 

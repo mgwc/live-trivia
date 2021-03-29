@@ -4,6 +4,7 @@ import sys
 import time
 from logging import StreamHandler
 from logging.handlers import RotatingFileHandler
+from flask_cors import CORS
 
 from flask import Flask
 
@@ -50,7 +51,7 @@ def create_app(test_config=None):
         app.logger.addHandler(stream_handler)
 
         app.logger.setLevel(logging.INFO)
-        #app.logger.info('Trivia startup')
+        # app.logger.info('Trivia startup')
 
     @app.route('/hello-world')
     def hello_world():
@@ -68,7 +69,8 @@ def create_app(test_config=None):
     from trivia.blueprints import questions
     app.register_blueprint(questions.bp)
 
-    # Register error handlers with app
+    # TODO Register error handlers with app
 
+    CORS(app)
 
     return app
