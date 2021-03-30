@@ -1,7 +1,7 @@
 import React from 'react'
 import Row from './Row'
 
-class Table extends React.Component {
+class QuestionTable extends React.Component {
   constructor(props) {
     super(props)
 
@@ -26,19 +26,27 @@ class Table extends React.Component {
     )
 
     const tableRows = this.props.rows.map(row => {
-      return <Row key={row.id} id={row.id} rowData={row}/>
+      return (
+          <Row key={row.id} id={row.id} rowData={row} showDeleteModal={this.props.showDeleteModal} />
+      )
     })
+
+    const tableBody = (
+        <tbody>
+          {tableRows}
+        </tbody>
+    )
 
 
     return (
       <div class="container">
-        <table className="table is-fullwidth">
+        <table class="table">
           {tableHeading}
-          {tableRows}
+          {tableBody}
         </table>
       </div>
     )
   }
 }
 
-export default Table
+export default QuestionTable
