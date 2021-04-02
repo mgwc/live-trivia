@@ -25,6 +25,7 @@ class AllQuestions extends React.Component {
     this.showDeleteModal = this.showDeleteModal.bind(this)
     this.hideDeleteModal = this.hideDeleteModal.bind(this)
     this.deleteQuestion = this.deleteQuestion.bind(this)
+    this.submitNewQuestion = this.submitNewQuestion.bind(this)
   }
 
   componentDidMount() {
@@ -46,6 +47,12 @@ class AllQuestions extends React.Component {
         console.log(questionData)
       })
   }
+
+  /*
+
+    Delete-question functionality
+
+   */
 
   showDeleteModal = (question) => {
     console.log("showDeleteModal invoked in AllQuestions; question param = " + JSON.stringify(question))
@@ -80,27 +87,63 @@ class AllQuestions extends React.Component {
       }).then(this.getQuestions())
   }
 
+  /*
+
+  Add-question functionality
+
+  */
+
+  showAddModal = () => {
+    console.log("Showing add-question modal")
+    this.setState({showAddModal: true})
+  }
+
+  submitNewQuestion = (formState) => {
+    console.log("Form data = ")
+    Object.keys(formState).forEach(function(key) {
+      console.log('' + key + ": " + formState[key])
+    })
+
+    axios.post(`${path()}/questions/add`, formState)
+      .then(res => {
+        console.log("response to question POST: " + res.data)
+       // if successful, close addModal and display success message
+       // if unsuccessful, keep addModal open and display failure message
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
   hideAddModal = () => {
     console.log("Hiding add-question modal")
+    this.setState({showAddModal: false})
   }
+
+  /*
+
+  Rendering
+
+  */
 
   render() {
 
-    console.log("Rendering AllQuestions, with this.state.showDeleteModal = " + this.state.showDeleteModal +
-      ", this.state.questionForDeletion = " + this.state.questionForDeletion)
+    console.log("Rendering AllQuestions, with this.state.showAddModal = " + this.state.showAddModal)
+
     const deleteQuestionModal = this.state.showDeleteModal ?
-      <DeletionModal
-        showModal={this.state.showDeleteModal}
-        hideModal={this.hideDeleteModal}
-        deleteQuestion={this.deleteQuestion}
-        question={this.state.questionForDeletion}
-      />
-      : null
+              <DeletionModal
+                showModal={this.state.showDeleteModal}
+                hideModal={this.hideDeleteModal}
+                deleteQuestion={this.deleteQuestion}
+                question={this.state.questionForDeletion}
+              />
+              : null
 
     const addQuestionModal = this.state.showAddModal ?
               <AddQuestionModal
                 showModal={this.state.showAddModal}
                 hideModal={this.hideAddModal}
+                handleSubmit={this.submitNewQuestion}
               />
               : null
 
@@ -114,6 +157,8 @@ class AllQuestions extends React.Component {
 
     return (
       <div>
+        <button onClick={this.showAddModal}>Add question</button>
+        {addQuestionModal}
         {deleteQuestionModal}
         {table}
       </div>
