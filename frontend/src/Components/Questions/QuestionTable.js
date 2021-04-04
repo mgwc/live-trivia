@@ -27,7 +27,13 @@ class QuestionTable extends React.Component {
 
     const tableRows = this.props.rows.map(row => {
       return (
-          <Row key={row.id} id={row.id} rowData={row} showDeleteModal={this.props.showDeleteModal} />
+          <Row
+            key={row.id}
+            id={row.id}
+            rowData={row}
+            showDeleteModal={this.props.showDeleteModal}
+            handleEditClick={this.props.handleEditClick}
+          />
       )
     })
 

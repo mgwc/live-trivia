@@ -51,12 +51,13 @@ def get_single_question(qid):
 @bp.route('/add', methods=['POST'])
 def add_question():
     current_app.logger.info("Received request to /add")
+    current_app.logger.info("Request json = " + str(request.json))
 
-    question_text = request.json['question_text']
-    answer_text = request.json.get('answer_text')
-    image_location = request.json.get('image_location')
-    category = request.json['category']
-    difficulty = request.json['difficulty']
+    question_text = request.json.get('questionText')
+    answer_text = request.json.get('answerText')
+    image_location = request.json.get('imageLocation')
+    category = request.json.get('category')
+    difficulty = request.json.get('difficulty')
 
     db = get_db()
     cur = db.cursor()
@@ -87,12 +88,12 @@ def add_question():
 # Route for viewing individual question
 @bp.route('/edit/<int:qid>', methods=['PUT'])
 def edit_question(qid):
-    question_text = request.json['question_text']
+    question_text = request.json.get('questionText')
     current_app.logger.info("Question_text = " + question_text + ", type = " + str(type(question_text)))
-    answer_text = request.json.get('answer_text')
-    image_location = request.json.get('image_location')
-    category = request.json['category']
-    difficulty = request.json['difficulty']
+    answer_text = request.json.get('answerText')
+    image_location = request.json.get('imageLocation')
+    category = request.json.get('category')
+    difficulty = request.json.get('difficulty')
 
     db = get_db()
     cur = db.cursor()

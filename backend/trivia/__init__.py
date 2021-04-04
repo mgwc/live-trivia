@@ -33,6 +33,8 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    print("App.debug = " + str(app.debug))
+
     # Configure logging
     if not app.debug:
         if not os.path.exists('logs'):
@@ -51,7 +53,7 @@ def create_app(test_config=None):
         app.logger.addHandler(stream_handler)
 
         app.logger.setLevel(logging.INFO)
-        # app.logger.info('Trivia startup')
+    # app.logger.info('Trivia startup')
 
     @app.route('/hello-world')
     def hello_world():
@@ -72,5 +74,6 @@ def create_app(test_config=None):
     # TODO Register error handlers with app
 
     CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     return app

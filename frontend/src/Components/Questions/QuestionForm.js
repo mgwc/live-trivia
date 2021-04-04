@@ -6,7 +6,7 @@ class QuestionForm extends React.Component {
     super(props)
 
     this.state = {
-      questionText: "",
+      questionText: this.props.initialQuestionText,
       answerText: "",
       image: "",
       category: "General Knowledge / Other",
@@ -28,6 +28,7 @@ class QuestionForm extends React.Component {
   }
 
   handleSubmit(event) {
+    console.log("Submitting form for question: " + this.state.questionText)
     event.preventDefault()
     this.props.handleSubmit(this.state)
   }
@@ -35,7 +36,7 @@ class QuestionForm extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} action={`${path()}/questions/add`} method="POST">
+      <form onSubmit={this.handleSubmit} method="POST">
         <label>
           Question (required)
           <textarea

@@ -9,14 +9,17 @@ class AddQuestionModal extends React.Component {
 
   render() {
 
-    const active = this.props.showModal ? "is-active" : ""
+    const active = this.props.data.showAddModal ? "is-active" : ""
     console.log("rendering addQuestionModal; active = " + active)
+
+    const modalContent = this.props.data.showAddModalSuccessMessage ? "Success" :
+      <QuestionForm handleSubmit={this.props.handleSubmit} />
 
     return (
       <div className={`modal ${active}`}>
         <div className="modal-background"></div>
         <div className="modal-content">
-          <QuestionForm handleSubmit={this.props.handleSubmit} />
+          {modalContent}
         </div>
         <button onClick={this.props.hideModal} class="modal-close is-large" aria-label="close"></button>
       </div>
