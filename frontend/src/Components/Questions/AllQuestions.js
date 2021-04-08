@@ -43,6 +43,12 @@ class AllQuestions extends React.Component {
   componentWillUnmount() {
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.pageNumber != this.state.pageNumber) {
+      this.getQuestions()
+    }
+  }
+
   getQuestions = () => {
     console.log("getQuestions() invoked")
     this.setState({loading: true})
@@ -210,13 +216,15 @@ class AllQuestions extends React.Component {
 
     this.setState(prevState => {
       let newPageNumber = prevState.pageNumber
-      if (event.target.className === 'Previous') {
+      if (event.target.className === 'pagination-previous') {
         console.log('Registered click on previous button')
         newPageNumber--
       }  else {
         console.log("Registered click on next button")
         newPageNumber++
       }
+
+      console.log("Current page = " + newPageNumber)
 
       return {
         pageNumber: newPageNumber
