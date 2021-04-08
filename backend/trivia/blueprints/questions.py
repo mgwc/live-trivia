@@ -2,7 +2,7 @@ import sqlite3
 import sys
 
 from flask import (
-    Blueprint, jsonify, request, current_app
+    Blueprint, jsonify, json, request, current_app
 )
 
 from trivia.db import get_db
@@ -14,8 +14,10 @@ bp = Blueprint('questions', __name__, url_prefix='/questions')  # (name, where b
 @bp.route('/', methods=['GET'])
 @bp.route('/<int:page>', methods=['GET'])
 def all_questions(page=1):
-    print("page = " + str(page))
+    current_app.logger.info("Received request to /questions/")
+    current_app.logger.info("page = " + str(page))
     db = get_db()
+    current_app.logger.info("db = " + str(db))
     cur = db.cursor()
     num_skipped_results = (page - 1) * 10
     rows = cur.execute('''
@@ -28,7 +30,8 @@ def all_questions(page=1):
         ORDER BY id ASC
         LIMIT 10
         '''.format(num_skipped_results)).fetchall()
-    return jsonify([tuple(row) for row in rows])
+    current_app.logger.info("num rows selected from db = " + str(len(rows)))
+    return jsonify([dict(row) for row in rows])
 
 
 # Route for data on single question
@@ -48,12 +51,13 @@ def get_single_question(qid):
 @bp.route('/add', methods=['POST'])
 def add_question():
     current_app.logger.info("Received request to /add")
+    current_app.logger.info("Request json = " + str(request.json))
 
-    question_text = request.json['question_text']
-    answer_text = request.json.get('answer_text')
-    image_location = request.json.get('image_location')
-    category = request.json['category']
-    difficulty = request.json['difficulty']
+    question_text = request.json.get('questionText')
+    answer_text = request.json.get('answerText')
+    image_location = request.json.get('imageLocation')
+    category = request.json.get('category')
+    difficulty = request.json.get('difficulty')
 
     db = get_db()
     cur = db.cursor()
@@ -71,25 +75,25 @@ def add_question():
 
     current_app.logger.info('Committed new row to db')
     new_row = cur.execute('''
-        SELECT id, question_text
+        SELECT id, question_text, answer_text, image_location, category, difficulty
         FROM question
         WHERE id = ?
     ''', (cur.lastrowid,)).fetchone()
     current_app.logger.info("new row = " + str(tuple(new_row)))
 
-    # return id of new row
+    # return new row data
     return jsonify(tuple(new_row))
 
 
 # Route for viewing individual question
 @bp.route('/edit/<int:qid>', methods=['PUT'])
 def edit_question(qid):
-    question_text = request.json['question_text']
+    question_text = request.json.get('questionText')
     current_app.logger.info("Question_text = " + question_text + ", type = " + str(type(question_text)))
-    answer_text = request.json.get('answer_text')
-    image_location = request.json.get('image_location')
-    category = request.json['category']
-    difficulty = request.json['difficulty']
+    answer_text = request.json.get('answerText')
+    image_location = request.json.get('imageLocation')
+    category = request.json.get('category')
+    difficulty = request.json.get('difficulty')
 
     db = get_db()
     cur = db.cursor()
@@ -128,5 +132,6 @@ def delete_question(qid):
         # handle error
         type, value, traceback = sys.exc_info()
         current_app.logger.error("Caught exception at cur.execute in add_question: {}, {}, {}".format(type, value, traceback))
-    return ""
+        return 'Database operation failed', 500
+    return "Success"
 

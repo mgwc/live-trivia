@@ -4,9 +4,9 @@ import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
-########################
-# Placeholder DB class from Flask tutorial
-########################
+'''
+Note: much of this follows the Flask documentation's tutorial code
+'''
 
 
 # this will be called in app factory to register the close_db and init_db_command functions with the application instance
