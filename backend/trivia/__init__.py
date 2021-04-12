@@ -5,8 +5,12 @@ import time
 from logging import StreamHandler
 from logging.handlers import RotatingFileHandler
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 
 from flask import Flask
+
+
+flask_bcrypt = Bcrypt()
 
 
 # application factory
@@ -75,5 +79,7 @@ def create_app(test_config=None):
 
     CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
+
+    flask_bcrypt.init_app(app)
 
     return app
