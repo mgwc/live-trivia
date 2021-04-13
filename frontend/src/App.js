@@ -4,6 +4,7 @@ import './App.css';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import AllQuestions from "./Components/Questions/AllQuestions";
+import AllGames from "./Components/Games/AllGames";
 
 // Adding a comment for testing purposes
 
@@ -14,6 +15,7 @@ function App() {
       <div className="App">
         <Route path="/" exact component={AllQuestions} />
         <Route path="/manage-questions" component={AllQuestions} />
+        <Route path="/manage-games" component={AllGames} />
       </div>
     </Router>
   );
