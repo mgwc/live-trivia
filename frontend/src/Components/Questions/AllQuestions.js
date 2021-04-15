@@ -4,6 +4,7 @@ import QuestionTable from "./QuestionTable"
 import DeletionModal from "./DeletionModal"
 import AddQuestionModal from "./AddQuestionModal"
 import EditQuestionModal from "./EditQuestionModal"
+import TableNav from "./../TableNav"
 import path from '../../req'
 
 // const api = axios.create({
@@ -245,35 +246,6 @@ class AllQuestions extends React.Component {
                 ", showEditModal = " + this.state.showEditModal +
                 ", selectedQuestion = " + this.state.selectedQuestion)
 
-    const tableNav = (
-      <nav className="pagination" role="navigation" aria-label="pagination">
-        <a className="pagination-previous" onClick={this.handlePaging}>Previous</a>
-        <a className="pagination-next" onClick={this.handlePaging}>Next page</a>
-        <ul className="pagination-list">
-          <li>
-            <a className="pagination-link" aria-label="Goto page 1">1</a>
-          </li>
-          <li>
-            <span className="pagination-ellipsis">&hellip;</span>
-          </li>
-          <li>
-            <a className="pagination-link" aria-label="Goto page 45">45</a>
-          </li>
-          <li>
-            <a className="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a>
-          </li>
-          <li>
-            <a className="pagination-link" aria-label="Goto page 47">47</a>
-          </li>
-          <li>
-            <span className="pagination-ellipsis">&hellip;</span>
-          </li>
-          <li>
-            <a className="pagination-link" aria-label="Goto page 86">86</a>
-          </li>
-        </ul>
-      </nav>
-    )
     const tableHeadings = ["Question", "Answer", "Image", "Category", "Difficulty", " ", " "]
     const table = this.state.loading ? <p>"Loading"</p> :
       <QuestionTable
@@ -290,7 +262,7 @@ class AllQuestions extends React.Component {
         <DeletionModal data={this.state} hideModal={this.hideDeleteModal} deleteQuestion={this.deleteQuestion} />
         <EditQuestionModal data={this.state} showEditModal={this.showEditModal} handleSubmit={this.handleEditSubmit}
           initialQuestionText=""/>
-        {tableNav}
+        <TableNav handlePaging={this.handlePaging} />
         {table}
       </div>
     )

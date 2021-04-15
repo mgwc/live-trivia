@@ -39,7 +39,7 @@ def create_app(test_config=None):
     if not app.debug:
         if not os.path.exists('logs'):
             os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/trivia.log', maxBytes=10240, backupCount=10)
+        file_handler = RotatingFileHandler('logs/new.log', maxBytes=10240, backupCount=10)
         file_handler.setFormatter(logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
         file_handler.setLevel(logging.INFO)
@@ -68,8 +68,9 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # Register blueprints with app
-    from trivia.blueprints import questions
+    from trivia.blueprints import questions, games
     app.register_blueprint(questions.bp)
+    app.register_blueprint(games.bp)
 
     # TODO Register error handlers with app
 
