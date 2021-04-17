@@ -55,7 +55,7 @@ function AllGames() {
 
       let hideModal = setTimeout(function() {
         setAddModal("false")
-      }, 2000)
+      }, 700)
 
       fetchGames()
     })
@@ -138,7 +138,7 @@ function AllGames() {
     <DeletionModal
       deleteModal={deleteModal}
       toggleDeleteModal={showDeleteModal}
-      deleteGame={deleteGame}
+      delete={deleteGame}
     />
   )
 

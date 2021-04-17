@@ -3,13 +3,10 @@ import axios from 'axios'
 import QuestionTable from "./QuestionTable"
 import DeletionModal from "./DeletionModal"
 import AddQuestionModal from "./AddQuestionModal"
+import AddGameQuestionModal from "./AddGameQuestionModal"
 import EditQuestionModal from "./EditQuestionModal"
 import TableNav from "./../TableNav"
 import path from '../../req'
-
-// const api = axios.create({
-//   baseURL:
-// })
 
 class AllQuestions extends React.Component {
   constructor(props) {
@@ -21,9 +18,12 @@ class AllQuestions extends React.Component {
       questions: [],
       showDeleteModal: false,
       showDeleteModalSuccessMessage: false,
+      selectedGame: props.match.params.gameId,
       selectedQuestion: null,
       showAddModal: false,
       showAddModalSuccessMessage: false,
+      showAddToGameModal: false,
+      showAddToGameModalSuccessMessage: false,
       showEditModal: false,
       showEditModalSuccessMessage: false
     }
@@ -34,6 +34,9 @@ class AllQuestions extends React.Component {
     this.deleteQuestion = this.deleteQuestion.bind(this)
     this.showEditModal = this.showEditModal.bind(this)
     this.submitNewQuestion = this.submitNewQuestion.bind(this)
+    this.showAddToGameModal = this.showAddToGameModal.bind(this)
+    this.handleAddToGameSubmit = this.handleAddToGameSubmit.bind(this)
+    this.addQuestionToGame = this.addQuestionToGame.bind(this)
     this.handlePaging = this.handlePaging.bind(this)
   }
 
@@ -145,7 +148,7 @@ class AllQuestions extends React.Component {
           this.setState({
             showAddModal: false,
             showAddModalSuccessMessage: false})
-        }.bind(this), 2000)
+        }.bind(this), 700)
         this.getQuestions()
       })
       .catch(function (error) {
@@ -162,13 +165,49 @@ class AllQuestions extends React.Component {
   /*
     Add question to game(s) functionality
   */
+  showAddToGameModal = (question) => {
+    this.setState(prevState => {
+      return {
+        selectedQuestion: prevState.showEditModal ? null : question,
+        showAddToGameModal: !prevState.showAddToGameModal
+      }
+    }, () => {
+      console.log("showAddToGameModal called; showAddToGameModal = " + this.state.showAddToGameModal)
+    })
+  }
 
+  handleAddToGameSubmit = (formState) => {
+    console.log("Form data = ")
+    Object.keys(formState).forEach(function(key) {
+      console.log('' + key + ": " + formState[key])
+    })
+
+    let formStateJson = {"gameId": "" + formState.selectedGame}
+    this.addQuestionToGame(formStateJson)
+  }
+
+  addQuestionToGame = (gameObject) => {
+    gameObject["questionId"] = "" + this.state.selectedQuestion.id
+    console.log("In addQuestionToGame; gameObject = " + JSON.stringify(gameObject))
+    axios.post(`${path()}/games/add-question`, gameObject)
+    .then(res => {
+      console.log("response to add-to-game POST: " + res.data)
+      this.setState({showAddToGameModalSuccessMessage: true})
+      let hideModal = setTimeout(function() {
+        this.setState({
+          showAddToGameModal: false,
+          showAddToGameModalSuccessMessage: false})
+        }.bind(this), 700)
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+  }
 
   /*
     Edit question functionality
   */
   showEditModal = (question) => {
-
     this.setState(prevState => {
       return {
         selectedQuestion: prevState.showEditModal ? null : question,
@@ -198,7 +237,7 @@ class AllQuestions extends React.Component {
             showEditModal: false,
             showEditModalSuccessMessage: false,
             selectedQuestion: null})
-        }.bind(this), 2000)
+        }.bind(this), 700)
         this.getQuestions()
       })
       .catch(function (error) {
@@ -244,7 +283,9 @@ class AllQuestions extends React.Component {
     console.log("Rendering AllQuestions, with this.state.showAddModal = " + this.state.showAddModal
                 + ", showDeleteModal = " + this.state.showDeleteModal +
                 ", showEditModal = " + this.state.showEditModal +
-                ", selectedQuestion = " + this.state.selectedQuestion)
+                ", selectedQuestion = " + this.state.selectedQuestion +
+                ", selectedGame = " + this.state.selectedGame +
+                ", this.match.gameId = " + this.props.match.params.gameId)
 
     const tableHeadings = ["Question", "Answer", "Image", "Category", "Difficulty", " ", " "]
     const table = this.state.loading ? <p>"Loading"</p> :
@@ -253,11 +294,13 @@ class AllQuestions extends React.Component {
         rows={this.state.questions}
         showDeleteModal={this.showDeleteModal}
         handleEditClick={this.showEditModal}
+        showAddToGameModal={this.showAddToGameModal}
       />
 
     return (
       <div>
         <button onClick={this.showAddModal}>Add question</button>
+        <AddGameQuestionModal data={this.state} hideModal={this.showAddToGameModal} handleSubmit={this.handleAddToGameSubmit} gameId={this.state.selectedGame} />
         <AddQuestionModal data={this.state} hideModal={this.hideAddModal} handleSubmit={this.submitNewQuestion} />
         <DeletionModal data={this.state} hideModal={this.hideDeleteModal} deleteQuestion={this.deleteQuestion} />
         <EditQuestionModal data={this.state} showEditModal={this.showEditModal} handleSubmit={this.handleEditSubmit}

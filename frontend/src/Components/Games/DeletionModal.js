@@ -3,12 +3,6 @@ import React from "react"
 class DeletionModal extends React.Component {
   constructor(props) {
     super(props)
-
-    this.cancelDeletion = this.cancelDeletion.bind(this)
-  }
-
-  cancelDeletion = () => {
-    console.log("Cancelling question deletion")
   }
 
   render() {
@@ -21,8 +15,8 @@ class DeletionModal extends React.Component {
     const modalContent = this.props.deleteModal == "success" ? "Success" :
       (
         <div>
-          <p>Are you sure you want to delete this game?</p>
-          <button onClick={this.props.deleteGame}>Yes</button>
+          <p>Are you sure you want to delete this?</p>
+          <button onClick={this.props.delete}>Yes</button>
           <button onClick={this.props.toggleDeleteModal}>No</button>
         </div>
     )

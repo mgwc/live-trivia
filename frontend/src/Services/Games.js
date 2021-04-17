@@ -48,3 +48,14 @@ export function getGameQuestions(gameId) {
       console.log("Error = " + error)
     })
 }
+
+export function deleteGameQuestion(question) {
+  return axios.delete(`${path()}/games/delete/${question.game_id}/${question.question_id}`)
+    .then(res => {
+      console.log("response to deleteGameQuestion: " + res.data)
+      return res.data
+    })
+    .catch(function (error) {
+      console.log("Error deleting game question: " + error)
+    })
+}

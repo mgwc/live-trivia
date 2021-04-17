@@ -33,6 +33,7 @@ class QuestionTable extends React.Component {
             rowData={row}
             showDeleteModal={this.props.showDeleteModal}
             handleEditClick={this.props.handleEditClick}
+            showAddToGameModal={this.props.showAddToGameModal}
           />
       )
     })

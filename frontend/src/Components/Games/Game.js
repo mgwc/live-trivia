@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from "react"
-import { getGameQuestions } from "../../Services/Games"
+import {Link} from 'react-router-dom'
+import { getGameQuestions, deleteGameQuestion } from "../../Services/Games"
 import TableNav from "../TableNav"
 import GameQuestionTable from "./GameQuestionTable"
+import DeletionModal from "./DeletionModal"
 
 function Game({ match }) {
   const [name, setName] = useState("")
@@ -14,13 +16,12 @@ function Game({ match }) {
     fetchGameInfo()
   }, [])
 
-
   function fetchGameInfo() {
     let mounted = true
     setLoadingGame(true)
     getGameQuestions(match.params.id)
       .then(questions => {
-        console.log("questions = " + questions)
+        console.log("first question = " + JSON.stringify(questions[0]))
         if (mounted) {  // prevents attempt to set data on unmounted component
           setQuestions(questions)
           console.log("questions set")
@@ -33,9 +34,26 @@ function Game({ match }) {
       return () => mounted = false  // component is unmounted
   }
 
+  /*
+    Delete functionality
+  */
+  function deleteQuestion() {
+      deleteGameQuestion(selectedQuestion)
+        .then(res => {
+          setDeleteModal("success")
+
+          let hideModal = setTimeout(function() {
+            setDeleteModal("false")
+          }, 700)
+
+          setSelectedQuestion(null)
+          fetchGameInfo()
+        })
+  }
+
   function toggleDeleteModal(question) {
     console.log("toggleDeleteModal invoked")
-    console.log("question.id = " + question.id)
+    console.log("question_id = " + question.question_id + ", game id = " + question.game_id)
     if (deleteModal == true) {
       setSelectedQuestion(null)
       setDeleteModal(false)
@@ -49,16 +67,35 @@ function Game({ match }) {
     }
   }
 
+  const deletionModal = <DeletionModal
+                          deleteModal={deleteModal}
+                          toggleDeleteModal={toggleDeleteModal}
+                          delete={deleteQuestion}
+                        />
+
+  /*
+    Game-question table
+  */
   const tableHeadings = ["Question", "Answer", "Image", "Category", "Difficulty", " ", " "]
   const table = <GameQuestionTable
                   headings={tableHeadings}
                   rows={questions}
-                  showDeleteModal={toggleDeleteModal}
+                  toggleDeleteModal={toggleDeleteModal}
                 />
+
+/*
+  Misc elements
+*/
+const addQuestionsButton = (
+  <button><Link to={`/manage-questions/${match.params.id}`}>Add Questions</Link></button>
+)
+
 
   return (
     <div>
-      <h1>Questions for game {match.params.id}:</h1>
+      {deletionModal}
+      <h1>Game {match.params.id} Questions</h1>
+      {addQuestionsButton}
       {table}
     </div>
   )

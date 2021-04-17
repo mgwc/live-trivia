@@ -15,7 +15,8 @@ function App() {
     <Router>
       <div className="App">
         <Route path="/" exact component={AllQuestions} />
-        <Route path="/manage-questions" component={AllQuestions} />
+        <Route path="/manage-questions" exact component={AllQuestions} />
+        <Route path="/manage-questions/:gameId" component={AllQuestions} />
         <Route path="/manage-games" exact component={AllGames} />
         <Route path="/manage-games/:id" component={Game} />
       </div>

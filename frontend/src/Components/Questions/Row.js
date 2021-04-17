@@ -5,6 +5,7 @@ class Row extends React.Component {
     super(props)
 
     this.showDeleteModal = this.showDeleteModal.bind(this)
+    this.showAddToGameModal = this.showAddToGameModal.bind(this)
   }
 
   componentDidMount() {
@@ -25,6 +26,10 @@ class Row extends React.Component {
     this.props.handleEditClick(this.props.rowData)
   }
 
+  showAddToGameModal = () => {
+    this.props.showAddToGameModal(this.props.rowData)
+  }
+
   render() {
 
     return (
@@ -35,7 +40,7 @@ class Row extends React.Component {
         <td>{this.props.rowData.category}</td>
         <td>{this.props.rowData.difficulty}</td>
         <td><button onClick={this.showEditModal}>Edit</button></td>
-        <td><button>Add to Game(s)</button></td>
+        <td><button onClick={this.showAddToGameModal}>Add to Game(s)</button></td>
         <td><button class="delete" onClick={this.showDeleteModal}></button></td>
       </tr>
     )

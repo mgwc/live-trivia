@@ -18,10 +18,10 @@ function GameQuestionTable(props) {
     const tableRows = props.rows.map(row => {
       return (
           <GameQuestionRow
-            key={row.id}
-            id={row.id}
+            key={row.question_id}
+            id={row.question_id}
             rowData={row}
-            showDeleteModal={props.showDeleteModal}
+            showDeleteModal={props.toggleDeleteModal}
           />
       )
     })
