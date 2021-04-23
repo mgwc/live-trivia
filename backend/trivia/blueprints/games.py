@@ -12,11 +12,10 @@ bp = Blueprint('games', __name__, url_prefix='/games')  # (name, where blueprint
 # Route for viewing games with optional page number
 @bp.route('/', methods=['GET'])
 @bp.route('/<int:page>', methods=['GET'])
-def all_games(page=1):
+def all_games_paginated(page=1):
     current_app.logger.info("Received request to /games/<int:page>")
     current_app.logger.info("page = " + str(page))
     db = get_db()
-    current_app.logger.info("db = " + str(db))
     cur = db.cursor()
     num_skipped_results = (page - 1) * 10
     rows = cur.execute('''
@@ -30,6 +29,20 @@ def all_games(page=1):
         LIMIT 10
         '''.format(num_skipped_results)).fetchall()
     current_app.logger.info("num rows selected from db = " + str(len(rows)))
+    return jsonify([dict(row) for row in rows])
+
+
+# Route for retrieving all games at once
+@bp.route('/all', methods=['GET'])
+def all_games():
+    current_app.logger.info("Received request to /games/all")
+    db = get_db()
+    cur = db.cursor()
+    rows = cur.execute('''
+        SELECT id, name, owner_id
+        FROM game
+        ORDER BY id ASC
+        ''').fetchall()
     return jsonify([dict(row) for row in rows])
 
 
@@ -135,7 +148,7 @@ def add_game_question():
         # handle error
         type, value, traceback = sys.exc_info()
         current_app.logger.error("Caught exception at cur.execute in add_game_question: {}, {}, {}".format(type, value, traceback))
-        pass
+        db.close()
 
     current_app.logger.info('Committed new row to db')
     new_row = cur.execute('''
