@@ -74,7 +74,7 @@ class AllQuestions extends React.Component {
    */
 
   showDeleteModal = (question) => {
-    console.log("showDeleteModal invoked in AllQuestions; question param = " + JSON.stringify(question))
+    console.dir("showDeleteModal invoked in AllQuestions; question param = " + question)
     console.log("question.id = " + question.id)
     this.setState({selectedQuestion: question, showDeleteModal: true}, () => {
       console.log("this.state.selectedQuestion after setting state = " +
@@ -93,7 +93,7 @@ class AllQuestions extends React.Component {
     console.log("deleteQuestion() in AllQuestions invoked")
 
     if (this.state.selectedQuestion) {
-      console.log("deleteQuestion() called in AllQuestions; selectedQuestion = " + this.state.selectedQuestion.questionText)
+      console.log("deleteQuestion() called in AllQuestions; selectedQuestion = " + this.state.selectedQuestion.question_text)
     } else {
       console.log("deleteQuestion() called in AllQuestions, but selectedQuestion is falsy")
     }
@@ -168,11 +168,12 @@ class AllQuestions extends React.Component {
   showAddToGameModal = (question) => {
     this.setState(prevState => {
       return {
-        selectedQuestion: prevState.showEditModal ? null : question,
+        selectedQuestion: question,
         showAddToGameModal: !prevState.showAddToGameModal
       }
     }, () => {
-      console.log("showAddToGameModal called; showAddToGameModal = " + this.state.showAddToGameModal)
+      console.dir("showAddToGameModal called; showAddToGameModal = " + this.state.showAddToGameModal +
+                  "selectedQuestion: " + this.state.selectedQuestion)
     })
   }
 
@@ -188,7 +189,7 @@ class AllQuestions extends React.Component {
 
   addQuestionToGame = (gameObject) => {
     gameObject["questionId"] = "" + this.state.selectedQuestion.id
-    console.log("In addQuestionToGame; gameObject = " + JSON.stringify(gameObject))
+    console.dir("In addQuestionToGame; gameObject = " + gameObject)
     axios.post(`${path()}/games/add-question`, gameObject)
     .then(res => {
       console.log("response to add-to-game POST: " + res.data)
@@ -225,7 +226,7 @@ class AllQuestions extends React.Component {
       console.log('' + key + ": " + formState[key])
     })
 
-    console.log("Submitting form for question " + this.state.selectedQuestion.questionText)
+    console.log("Submitting form for question " + this.state.selectedQuestion.question_text)
 
     axios.put(`${path()}/questions/edit/${this.state.selectedQuestion.id}`, formState)
       .then(res => {
@@ -300,7 +301,13 @@ class AllQuestions extends React.Component {
     return (
       <div>
         <button onClick={this.showAddModal}>Add question</button>
-        <AddGameQuestionModal data={this.state} hideModal={this.showAddToGameModal} handleSubmit={this.handleAddToGameSubmit} gameId={this.state.selectedGame} />
+        <AddGameQuestionModal
+          data={this.state}
+          hideModal={this.showAddToGameModal}
+          handleSubmit={this.handleAddToGameSubmit}
+          gameId={this.state.selectedGame}
+          question={this.state.selectedQuestion}
+        />
         <AddQuestionModal data={this.state} hideModal={this.hideAddModal} handleSubmit={this.submitNewQuestion} />
         <DeletionModal data={this.state} hideModal={this.hideDeleteModal} deleteQuestion={this.deleteQuestion} />
         <EditQuestionModal data={this.state} showEditModal={this.showEditModal} handleSubmit={this.handleEditSubmit}

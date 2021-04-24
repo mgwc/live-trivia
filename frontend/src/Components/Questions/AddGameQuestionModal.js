@@ -10,10 +10,11 @@ class AddGameQuestionModal extends React.Component {
   render() {
 
     const active = this.props.data.showAddToGameModal ? "is-active" : ""
-    console.log("rendering addQuestionModal; active = " + active)
+    console.dir("rendering addQuestionModal; active = " + active +
+                ", question = " + this.props.question)
 
     const modalContent = this.props.data.showAddToGameModalSuccessMessage ? "Success" :
-      <AddToGameForm handleSubmit={this.props.handleSubmit} gameId={this.props.gameId} />
+      <AddToGameForm handleSubmit={this.props.handleSubmit} gameId={this.props.gameId} question={this.props.question} />
 
     return (
       <div className={`modal ${active}`}>

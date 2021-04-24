@@ -60,10 +60,15 @@ class AddToGameForm extends React.Component {
 
     return (
       <form onSubmit={this.handleSubmit} method="POST">
-        <p>this.state.selectedGame = {this.state.selectedGame} </p>
-        <p>Question: </p>
         <label>
-          Add to game:
+          <p>Add question</p>
+          <br />
+          <p>"{this.props.question ? this.props.question.question_text : ""}"</p>
+          <br />
+        </label>
+        <label>
+          <p>to game:</p>
+          <br />
           <select name="selectedGame" value={this.state.selectedGame} onChange={this.handleChange} required>
             <option key="-1" value={null}></option>
             {gameOptions}
