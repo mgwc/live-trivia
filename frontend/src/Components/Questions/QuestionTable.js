@@ -14,7 +14,7 @@ class QuestionTable extends React.Component {
   render() {
 
     const headings = this.props.headings.map(heading => {
-      return <th>{heading}</th>
+      return <th key={heading}>{heading}</th>
     })
 
     const tableHeading = (
@@ -33,6 +33,7 @@ class QuestionTable extends React.Component {
             rowData={row}
             showDeleteModal={this.props.showDeleteModal}
             handleEditClick={this.props.handleEditClick}
+            showAddToGameModal={this.props.showAddToGameModal}
           />
       )
     })

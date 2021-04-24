@@ -12,9 +12,11 @@ def test_get_all_questions(client):
 def test_get_page_of_questions(client):
     response = client.get('/questions/')
     response_json = response.get_json()
+    print("response_json = " + str(response_json))
     response_two = client.get('/questions/2')
     response_two_json = response_two.get_json()
-    assert response_json[0][1] != response_two_json[1][1]
+    print("response_two_json = " + str(response_two_json))
+    assert response_json[0]['answer_text'] != response_two_json[0]['answer_text']
 
 
 def test_get_single_question(client):
@@ -28,7 +30,7 @@ def test_add_question(client):
     answer_text = "You"
     category = "Pop Culture"
     difficulty = "Hard"
-    added_row_response = client.post('/questions/add', json={'question_text': question_text, 'answer_text': answer_text,
+    added_row_response = client.post('/questions/add', json={'questionText': question_text, 'answerText': answer_text,
                                                              'category': category, 'difficulty': difficulty})
     print("added_row_response = " + str(added_row_response.get_json()))
     assert added_row_response.get_json()[1] == "Who was Time magazine's unusual choice for Person of the Year in 2006?"
@@ -58,7 +60,7 @@ def test_edit_question(client):
     answer_text = "The North Pole"
     category = "Biology"
     difficulty = "Easy"
-    new_response = client.put('/questions/edit/3', json={'question_text': question_text, 'answer_text': answer_text,
+    new_response = client.put('/questions/edit/3', json={'questionText': question_text, 'answerText': answer_text,
                                                          'category': category, 'difficulty': difficulty})
     new_response_json = new_response.get_json()
     assert new_response_json[0] == 3
@@ -74,7 +76,7 @@ def test_delete_question(client):
     answer_text = "Answer"
     category = "Pop Culture"
     difficulty = "Hard"
-    added_row_response = client.post('/questions/add', json={'question_text': question_text, 'answer_text': answer_text,
+    added_row_response = client.post('/questions/add', json={'questionText': question_text, 'answerText': answer_text,
                                                              'category': category, 'difficulty': difficulty})
     qid = int(added_row_response.get_json()[0])
     print("qid = " + str(qid))

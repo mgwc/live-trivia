@@ -1,11 +1,10 @@
 import React from 'react'
 
-class Row extends React.Component {
+class GameQuestionRow extends React.Component {
   constructor(props) {
     super(props)
 
     this.showDeleteModal = this.showDeleteModal.bind(this)
-    this.showAddToGameModal = this.showAddToGameModal.bind(this)
   }
 
   componentDidMount() {
@@ -21,15 +20,6 @@ class Row extends React.Component {
     this.props.showDeleteModal(this.props.rowData)
   }
 
-  showEditModal = () => {
-    console.log("Row's showEditModal was called; this.props.rowData = " + JSON.stringify(this.props.rowData))
-    this.props.handleEditClick(this.props.rowData)
-  }
-
-  showAddToGameModal = () => {
-    this.props.showAddToGameModal(this.props.rowData)
-  }
-
   render() {
 
     return (
@@ -39,12 +29,10 @@ class Row extends React.Component {
         <td>{this.props.rowData.image_location}</td>
         <td>{this.props.rowData.category}</td>
         <td>{this.props.rowData.difficulty}</td>
-        <td><button onClick={this.showEditModal}>Edit</button></td>
-        <td><button onClick={this.showAddToGameModal}>Add to Game(s)</button></td>
         <td><button class="delete" onClick={this.showDeleteModal}></button></td>
       </tr>
     )
   }
 }
 
-export default Row
+export default GameQuestionRow

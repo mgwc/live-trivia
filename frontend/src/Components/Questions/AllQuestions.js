@@ -3,12 +3,10 @@ import axios from 'axios'
 import QuestionTable from "./QuestionTable"
 import DeletionModal from "./DeletionModal"
 import AddQuestionModal from "./AddQuestionModal"
+import AddGameQuestionModal from "./AddGameQuestionModal"
 import EditQuestionModal from "./EditQuestionModal"
+import TableNav from "./../TableNav"
 import path from '../../req'
-
-// const api = axios.create({
-//   baseURL:
-// })
 
 class AllQuestions extends React.Component {
   constructor(props) {
@@ -20,9 +18,12 @@ class AllQuestions extends React.Component {
       questions: [],
       showDeleteModal: false,
       showDeleteModalSuccessMessage: false,
+      selectedGame: props.match.params.gameId,
       selectedQuestion: null,
       showAddModal: false,
       showAddModalSuccessMessage: false,
+      showAddToGameModal: false,
+      showAddToGameModalSuccessMessage: false,
       showEditModal: false,
       showEditModalSuccessMessage: false
     }
@@ -33,6 +34,9 @@ class AllQuestions extends React.Component {
     this.deleteQuestion = this.deleteQuestion.bind(this)
     this.showEditModal = this.showEditModal.bind(this)
     this.submitNewQuestion = this.submitNewQuestion.bind(this)
+    this.showAddToGameModal = this.showAddToGameModal.bind(this)
+    this.handleAddToGameSubmit = this.handleAddToGameSubmit.bind(this)
+    this.addQuestionToGame = this.addQuestionToGame.bind(this)
     this.handlePaging = this.handlePaging.bind(this)
   }
 
@@ -70,7 +74,7 @@ class AllQuestions extends React.Component {
    */
 
   showDeleteModal = (question) => {
-    console.log("showDeleteModal invoked in AllQuestions; question param = " + JSON.stringify(question))
+    console.dir("showDeleteModal invoked in AllQuestions; question param = " + question)
     console.log("question.id = " + question.id)
     this.setState({selectedQuestion: question, showDeleteModal: true}, () => {
       console.log("this.state.selectedQuestion after setting state = " +
@@ -89,7 +93,7 @@ class AllQuestions extends React.Component {
     console.log("deleteQuestion() in AllQuestions invoked")
 
     if (this.state.selectedQuestion) {
-      console.log("deleteQuestion() called in AllQuestions; selectedQuestion = " + this.state.selectedQuestion.questionText)
+      console.log("deleteQuestion() called in AllQuestions; selectedQuestion = " + this.state.selectedQuestion.question_text)
     } else {
       console.log("deleteQuestion() called in AllQuestions, but selectedQuestion is falsy")
     }
@@ -144,7 +148,7 @@ class AllQuestions extends React.Component {
           this.setState({
             showAddModal: false,
             showAddModalSuccessMessage: false})
-        }.bind(this), 2000)
+        }.bind(this), 700)
         this.getQuestions()
       })
       .catch(function (error) {
@@ -161,13 +165,50 @@ class AllQuestions extends React.Component {
   /*
     Add question to game(s) functionality
   */
+  showAddToGameModal = (question) => {
+    this.setState(prevState => {
+      return {
+        selectedQuestion: question,
+        showAddToGameModal: !prevState.showAddToGameModal
+      }
+    }, () => {
+      console.dir("showAddToGameModal called; showAddToGameModal = " + this.state.showAddToGameModal +
+                  "selectedQuestion: " + this.state.selectedQuestion)
+    })
+  }
 
+  handleAddToGameSubmit = (formState) => {
+    console.log("Form data = ")
+    Object.keys(formState).forEach(function(key) {
+      console.log('' + key + ": " + formState[key])
+    })
+
+    let formStateJson = {"gameId": "" + formState.selectedGame}
+    this.addQuestionToGame(formStateJson)
+  }
+
+  addQuestionToGame = (gameObject) => {
+    gameObject["questionId"] = "" + this.state.selectedQuestion.id
+    console.dir("In addQuestionToGame; gameObject = " + gameObject)
+    axios.post(`${path()}/games/add-question`, gameObject)
+    .then(res => {
+      console.log("response to add-to-game POST: " + res.data)
+      this.setState({showAddToGameModalSuccessMessage: true})
+      let hideModal = setTimeout(function() {
+        this.setState({
+          showAddToGameModal: false,
+          showAddToGameModalSuccessMessage: false})
+        }.bind(this), 700)
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+  }
 
   /*
     Edit question functionality
   */
   showEditModal = (question) => {
-
     this.setState(prevState => {
       return {
         selectedQuestion: prevState.showEditModal ? null : question,
@@ -185,7 +226,7 @@ class AllQuestions extends React.Component {
       console.log('' + key + ": " + formState[key])
     })
 
-    console.log("Submitting form for question " + this.state.selectedQuestion.questionText)
+    console.log("Submitting form for question " + this.state.selectedQuestion.question_text)
 
     axios.put(`${path()}/questions/edit/${this.state.selectedQuestion.id}`, formState)
       .then(res => {
@@ -197,7 +238,7 @@ class AllQuestions extends React.Component {
             showEditModal: false,
             showEditModalSuccessMessage: false,
             selectedQuestion: null})
-        }.bind(this), 2000)
+        }.bind(this), 700)
         this.getQuestions()
       })
       .catch(function (error) {
@@ -243,37 +284,10 @@ class AllQuestions extends React.Component {
     console.log("Rendering AllQuestions, with this.state.showAddModal = " + this.state.showAddModal
                 + ", showDeleteModal = " + this.state.showDeleteModal +
                 ", showEditModal = " + this.state.showEditModal +
-                ", selectedQuestion = " + this.state.selectedQuestion)
+                ", selectedQuestion = " + this.state.selectedQuestion +
+                ", selectedGame = " + this.state.selectedGame +
+                ", this.match.gameId = " + this.props.match.params.gameId)
 
-    const tableNav = (
-      <nav className="pagination" role="navigation" aria-label="pagination">
-        <a className="pagination-previous" onClick={this.handlePaging}>Previous</a>
-        <a className="pagination-next" onClick={this.handlePaging}>Next page</a>
-        <ul className="pagination-list">
-          <li>
-            <a className="pagination-link" aria-label="Goto page 1">1</a>
-          </li>
-          <li>
-            <span className="pagination-ellipsis">&hellip;</span>
-          </li>
-          <li>
-            <a className="pagination-link" aria-label="Goto page 45">45</a>
-          </li>
-          <li>
-            <a className="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a>
-          </li>
-          <li>
-            <a className="pagination-link" aria-label="Goto page 47">47</a>
-          </li>
-          <li>
-            <span className="pagination-ellipsis">&hellip;</span>
-          </li>
-          <li>
-            <a className="pagination-link" aria-label="Goto page 86">86</a>
-          </li>
-        </ul>
-      </nav>
-    )
     const tableHeadings = ["Question", "Answer", "Image", "Category", "Difficulty", " ", " "]
     const table = this.state.loading ? <p>"Loading"</p> :
       <QuestionTable
@@ -281,16 +295,24 @@ class AllQuestions extends React.Component {
         rows={this.state.questions}
         showDeleteModal={this.showDeleteModal}
         handleEditClick={this.showEditModal}
+        showAddToGameModal={this.showAddToGameModal}
       />
 
     return (
       <div>
         <button onClick={this.showAddModal}>Add question</button>
+        <AddGameQuestionModal
+          data={this.state}
+          hideModal={this.showAddToGameModal}
+          handleSubmit={this.handleAddToGameSubmit}
+          gameId={this.state.selectedGame}
+          question={this.state.selectedQuestion}
+        />
         <AddQuestionModal data={this.state} hideModal={this.hideAddModal} handleSubmit={this.submitNewQuestion} />
         <DeletionModal data={this.state} hideModal={this.hideDeleteModal} deleteQuestion={this.deleteQuestion} />
         <EditQuestionModal data={this.state} showEditModal={this.showEditModal} handleSubmit={this.handleEditSubmit}
           initialQuestionText=""/>
-        {tableNav}
+        <TableNav handlePaging={this.handlePaging} />
         {table}
       </div>
     )

@@ -33,13 +33,17 @@ CREATE TABLE game (
 CREATE TABLE host (
     id INTEGER PRIMARY KEY,
     username TEXT NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    session INTEGER
 );
 
 CREATE TABLE game_question (
     game_id INTEGER NOT NULL,
     question_id INTEGER NOT NULL,
+    idx INTEGER,
+    round INTEGER,
     PRIMARY KEY (game_id, question_id),
     FOREIGN KEY (game_id) REFERENCES game (id),
+    UNIQUE(game_id, idx, round),
     FOREIGN KEY (question_id) REFERENCES question (id)
 );
