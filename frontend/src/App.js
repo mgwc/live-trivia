@@ -7,6 +7,7 @@ import AllQuestions from "./Components/Questions/AllQuestions";
 import AllGames from "./Components/Games/AllGames";
 import Game from "./Components/Games/Game";
 import PlayerView from "./Components/LiveGames/PlayerView";
+import HostView from "./Components/LiveGames/HostView";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/manage-games" exact component={AllGames} />
         <Route path="/manage-games/:id" component={Game} />
         <Route path="/play/:gameId" component={PlayerView} />
+        <Route path="/host/:gameId" component={HostView} />
       </div>
     </Router>
   );
