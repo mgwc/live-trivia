@@ -39,7 +39,7 @@ function AnswerForm(props) {
     </form>
   )
 
-  let output = props.phase === "question" ? form : null
+  let output = props.phase === "questions" ? form : null
 
   return (
     output

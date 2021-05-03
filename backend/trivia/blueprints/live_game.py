@@ -38,8 +38,10 @@ def handle_answer(json):
 
 @socketio.on('reveal_answer')
 def handle_reveal_answer(json):
-    print("Received reveal_answer event; question = {}, answer = {}", json['question'], json['answer'])
-    # current_app.logger.info("Received message {}", str(data))
+    print("Received reveal_answer event; question = {}, answer = {}".format(json['question']['question_text'],
+          json['question']['answer_text']))
+    emit('reveal_answer', {"question": json['question']['question_text'], "answer": json['question']['answer_text']},
+         broadcast=True)
 
 
 @socketio.on('json')

@@ -11,6 +11,8 @@ function PlayerView(props) {
   const [questionIdx, setQuestionIdx] = useState(0)
   const [questions, setQuestions] = useState([])
   const [answer, setAnswer] = useState("")
+  const [revealedQuestion, setRevealedQuestion] = useState("")
+  const [revealedAnswer, setRevealedAnswer] = useState("")
   const [phase, setPhase] = useState("waiting")
 
   useEffect(() => {
@@ -19,7 +21,14 @@ function PlayerView(props) {
     socket.on('question', data => {
       console.log("Received question w/ data: " + JSON.stringify(data))
       setQuestions(questions => [...questions, data.question])
-      setPhase("question")
+      setPhase("questions")
+    })
+
+    socket.on('reveal_answer', data => {
+      console.log("Received revealed q & a: " + JSON.stringify(data))
+      setRevealedQuestion(data.question)
+      setRevealedAnswer(data.answer)
+      setPhase("answers")
     })
 
     return function cleanupSocket() {
@@ -38,6 +47,24 @@ function PlayerView(props) {
       )
     })
   )
+
+  const questionAndAnswerElements = (
+    <div>
+      <p>{revealedQuestion}</p>
+      <p>{revealedAnswer}</p>
+    </div>
+  )
+
+  let pageFocus
+  if (phase === "waiting") {
+    pageFocus = null
+  } else if (phase === "questions") {
+    pageFocus = questionElements
+  } else if (phase === "answers") {
+    pageFocus = questionAndAnswerElements
+  } else {
+    pageFocus = null
+  }
 
   return (
     <div>

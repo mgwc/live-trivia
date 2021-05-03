@@ -4,6 +4,7 @@ import path from "../../req.js"
 import QuestionForm from "./QuestionForm"
 import HostQuestionTable from "./HostQuestionTable"
 import AnswerElement from "./AnswerElement"
+import ChooseHostMode from "./ChooseHostMode"
 import { getGameQuestions } from "../../Services/Games"
 
 
@@ -11,6 +12,7 @@ function HostView(props) {
 
   const [answers, setAnswers] = useState([])
   const [questions, setQuestions] = useState([])
+  const [hostMode, setHostMode] = useState("questions")
   const gameId = props.match.params.gameId
   let socket;
 
@@ -37,20 +39,12 @@ function HostView(props) {
       .then(questions => {
         if (mounted) {  // prevents attempt to set data on unmounted component
           setQuestions(questions)
-          console.log("Questions[0] = ")
-          console.log(questions[0].question_id)
           // createQuestionsObject()
         } else {
           console.log("Component wasn't mounted in fetchGameInfo()")
         }
       })
       return () => mounted = false  // component is unmounted
-  }
-
-  function selectQuestion(questionId) {
-    console.log("Question " + questionId + " was checked")
-
-
   }
 
   function submitQuestion(questionId) {
@@ -63,7 +57,17 @@ function HostView(props) {
       }
     }
     console.log(`submitQuestion received question: ${question}`)
-    socket.emit('question', {"gameId": gameId, "question": question})
+
+    if (hostMode === "questions") {
+      socket.emit('question', {"gameId": gameId, "question": question})
+    } else {
+      socket.emit('reveal_answer', {"gameId": gameId, "question": question})
+    }
+  }
+
+  function chooseHostMode(value) {
+    setHostMode(value)
+    console.log("Set host mode to " + value)
   }
 
   const answerElements = (
@@ -79,7 +83,8 @@ function HostView(props) {
       <div class="columns">
         <div class="column">
           <container>
-            <HostQuestionTable rows={questions} selectQuestion={selectQuestion} submitQuestion={submitQuestion} />
+            <ChooseHostMode chooseHostMode={chooseHostMode} mode={hostMode} />
+            <HostQuestionTable rows={questions} submitQuestion={submitQuestion} />
           </container>
         </div>
         <div class="column">
