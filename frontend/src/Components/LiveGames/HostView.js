@@ -3,11 +3,13 @@ import { io } from "socket.io-client"
 import path from "../../req.js"
 import QuestionForm from "./QuestionForm"
 import HostQuestionTable from "./HostQuestionTable"
+import AnswerElement from "./AnswerElement"
 import { getGameQuestions } from "../../Services/Games"
 
 
 function HostView(props) {
 
+  const [answers, setAnswers] = useState([])
   const [questions, setQuestions] = useState([])
   const gameId = props.match.params.gameId
   let socket;
@@ -15,8 +17,9 @@ function HostView(props) {
   useEffect(() => {
     socket = io(`${path()}`)
 
-    socket.on('question', data => {
-      console.log("Heard question event; data = " + String(data))
+    socket.on('answer', data => {
+      console.log("Heard answer event; data = ", data)
+      setAnswers(answers => [...answers, data])
     })
 
     return function cleanupSocket() {
@@ -63,6 +66,14 @@ function HostView(props) {
     socket.emit('question', {"gameId": gameId, "question": question})
   }
 
+  const answerElements = (
+    answers.map((answer, index) => {
+      return (
+        <AnswerElement key={index} answer={answer} />
+      )
+    })
+  )
+
   return (
     <section>
       <div class="columns">
@@ -72,7 +83,7 @@ function HostView(props) {
           </container>
         </div>
         <div class="column">
-          <p>A column</p>
+          {answerElements}
         </div>
       </div>
     </section>
