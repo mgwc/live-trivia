@@ -1,5 +1,6 @@
 import sqlite3
 import sys
+import json as pyjson
 from flask import (
     Blueprint, jsonify, request, current_app
 )
@@ -19,8 +20,8 @@ def handle_connect():
 def handle_question(json):
     print("Received question " + str(json))
     print("json[gameId] = " + json['gameId'])
-    print("json[question] = " + json['question'])
-    emit('question', {'question': json['question']}, broadcast=True)
+    print("json[question] = " + json['question']['question_text'])
+    emit('question', {'question': json['question']['question_text']}, broadcast=True)
 
 
 @socketio.on('connection event')
@@ -29,18 +30,16 @@ def handle_connection_event(json):
     # current_app.logger.info("Received connection event with message: {}", str(json))
 
 
-@socketio.on('message')
-def handle_message(data):
-    print("Received message event")
-    #current_app.logger.info("Received message {}", str(data))
-
-
 @socketio.on('answer')
-def handle_answer(data):
-    print("Received answer {}", data)
-    print("Answer = {}, name = {}", data['answer'], data['name'])
-    emit("answer_ack", "Received your answer")
-    # current_app.logger.info("Received answer {}", data)
+def handle_answer(json):
+    print("Received answer = {}, name = {}".format(json['answer'], json['name']))
+    emit('answer', json, broadcast=True)
+
+
+@socketio.on('reveal_answer')
+def handle_reveal_answer(json):
+    print("Received reveal_answer event; question = {}, answer = {}", json['question'], json['answer'])
+    # current_app.logger.info("Received message {}", str(data))
 
 
 @socketio.on('json')
