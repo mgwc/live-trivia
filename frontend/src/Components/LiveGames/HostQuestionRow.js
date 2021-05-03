@@ -18,11 +18,6 @@ function HostQuestionRow(props) {
       <td>{props.rowData.category}</td>
       <td>{props.rowData.difficulty}</td>
       <td><button onClick={submitQuestion}>Send</button></td>
-      <td>
-        <form action="">
-          <input type="checkbox" id={props.id} name={props.id} onClick={handleCheckbox} />
-        </form>
-      </td>
     </tr>
   )
 }

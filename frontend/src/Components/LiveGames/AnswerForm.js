@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 function AnswerForm(props) {
 
@@ -7,8 +7,10 @@ function AnswerForm(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Submitting answer ${answer}`)
     props.handleSubmit(answer, name)
+    alert(`Answer submitted`)
+    setAnswer("")
+    setName("")
   }
 
   const form = (

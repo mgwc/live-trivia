@@ -14,6 +14,7 @@ function PlayerView(props) {
   const [revealedQuestion, setRevealedQuestion] = useState("")
   const [revealedAnswer, setRevealedAnswer] = useState("")
   const [phase, setPhase] = useState("waiting")
+  const [prevPhase, setPrevPhase] = useState("")
 
   useEffect(() => {
     socket = io(`${path()}`)
@@ -21,6 +22,7 @@ function PlayerView(props) {
     socket.on('question', data => {
       console.log("Received question w/ data: " + JSON.stringify(data))
       setQuestions(questions => [...questions, data.question])
+      setPrevPhase(phase)
       setPhase("questions")
     })
 
@@ -28,6 +30,7 @@ function PlayerView(props) {
       console.log("Received revealed q & a: " + JSON.stringify(data))
       setRevealedQuestion(data.question)
       setRevealedAnswer(data.answer)
+      setPrevPhase(phase)
       setPhase("answers")
     })
 
@@ -36,9 +39,21 @@ function PlayerView(props) {
     }
   })
 
+  useEffect(() => {
+    if (prevPhase === "questions") {
+        setQuestions([])
+    }
+  }, [phase])
+
   function submitAnswer(answer, name) {
     socket.emit('answer', {"answer": answer, "name": name})
   }
+
+  const waitingElement = (
+    <div>
+      <p>Waiting for host</p>
+    </div>
+  )
 
   const questionElements = (
     questions.map(question => {
@@ -51,13 +66,14 @@ function PlayerView(props) {
   const questionAndAnswerElements = (
     <div>
       <p>{revealedQuestion}</p>
+      <br />
       <p>{revealedAnswer}</p>
     </div>
   )
 
   let pageFocus
   if (phase === "waiting") {
-    pageFocus = null
+    pageFocus = waitingElement
   } else if (phase === "questions") {
     pageFocus = questionElements
   } else if (phase === "answers") {
@@ -70,7 +86,7 @@ function PlayerView(props) {
     <div>
       <h1>Questions</h1>
       <br />
-      {questionElements}
+      {pageFocus}
       <br />
       <AnswerForm phase={phase} handleSubmit={submitAnswer} />
     </div>
