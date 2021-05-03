@@ -83,13 +83,19 @@ function PlayerView(props) {
   }
 
   return (
-    <div>
-      <h1>Questions</h1>
-      <br />
-      {pageFocus}
-      <br />
-      <AnswerForm phase={phase} handleSubmit={submitAnswer} />
+    <section>
+    <div class="columns">
+    <div class="column" style={{padding:20}}>
+      <div class="container">
+        <h4 class="title is-4">Questions</h4>
+        <br />
+        {pageFocus}
+        <br />
+        <AnswerForm phase={phase} handleSubmit={submitAnswer} />
+      </div>
     </div>
+    </div>
+    </section>
   )
 }
 

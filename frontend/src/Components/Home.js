@@ -27,7 +27,7 @@ function Home() {
 
   return (
     <section class="section">
-      <div class="container" style={{paddingLeft:120, paddingRight:120}}>
+      <div class="container" style={{paddingLeft:400, paddingRight:400}}>
         <nav class="level">
           <div class="level-left">
             <div class="level-item">
@@ -39,7 +39,7 @@ function Home() {
           <div class="level-right">
             <div class="level-item">
               <a class="button is-large" href="/manage-games/">
-                <h3 class="title is-3">Manage games</h3>
+                <h3 class="title is-3">Manage Games</h3>
               </a>
             </div>
           </div>

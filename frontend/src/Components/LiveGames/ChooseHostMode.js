@@ -12,10 +12,10 @@ function ChooseHostMode(props) {
 
   return (
     <div onChange={handleChange}>
-      <input type="radio" id="questions" name="host mode" value="questions" defaultChecked />
-      <label for="questions">Questions</label>
+      <input type="radio" id="questions" name="host mode" value="questions" style={{marginRight:5}} defaultChecked />
+      <label for="questions" style={{marginRight:10}}>Questions</label>
       <span />
-      <input type="radio" id="answers" name="host mode" value="answers" />
+      <input type="radio" id="answers" name="host mode" value="answers" style={{marginRight:5}} />
       <label for="answers">Answers</label>
     </div>
   )

@@ -87,16 +87,26 @@ function Game({ match }) {
   Misc elements
 */
 const addQuestionsButton = (
-  <button><Link to={`/manage-questions/${match.params.id}`}>Add Questions</Link></button>
+  <button class="button"><Link to={`/manage-questions/${match.params.id}`}>Add Questions</Link></button>
 )
 
 
   return (
     <div>
       {deletionModal}
-      <h1>Game {match.params.id} Questions</h1>
-      {addQuestionsButton}
-      {table}
+      <div class="container">
+        <h3 class="title is-3">Game {match.params.id} Questions</h3>
+        <nav class="level">
+          <div class="level-left">
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              {addQuestionsButton}
+            </div>
+          </div>
+        </nav>
+        {table}
+      </div>
     </div>
   )
 }

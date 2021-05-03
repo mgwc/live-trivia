@@ -82,13 +82,19 @@ function HostView(props) {
     <section>
       <div class="columns">
         <div class="column">
-          <container>
-            <ChooseHostMode chooseHostMode={chooseHostMode} mode={hostMode} />
+          <div class="container" style={{padding:20}}>
+            <h4 class="title is-4">Game questions</h4>
+            <div style={{marginBottom:10}}>
+              <ChooseHostMode chooseHostMode={chooseHostMode} mode={hostMode} />
+            </div>
             <HostQuestionTable rows={questions} submitQuestion={submitQuestion} />
-          </container>
+          </div>
         </div>
         <div class="column">
-          {answerElements}
+          <div class="container" style={{padding:20}}>
+            <h4 class="title is-4">Player answers</h4>
+            {answerElements}
+          </div>
         </div>
       </div>
     </section>

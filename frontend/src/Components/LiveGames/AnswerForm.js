@@ -16,12 +16,13 @@ function AnswerForm(props) {
   const form = (
     <form onSubmit={handleSubmit} method="POST">
       <label>
-        Answer
+        Answers
         <br />
         <textarea
           name="answer"
           value={answer}
           onChange={e => setAnswer(e.target.value)}
+          style={{marginBottom:10}}
           required
         />
       </label>
@@ -33,11 +34,12 @@ function AnswerForm(props) {
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
+          style={{marginBottom:20}}
           required
         />
       </label>
       <br />
-      <input type="submit" value="Submit" />
+      <input class="button is-focused" type="submit" value="Submit" />
     </form>
   )
 
