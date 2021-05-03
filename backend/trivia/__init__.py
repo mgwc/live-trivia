@@ -5,8 +5,12 @@ import time
 from logging import StreamHandler
 from logging.handlers import RotatingFileHandler
 from flask_cors import CORS
+from flask_socketio import SocketIO
+from flask import Flask, request
+from trivia.origins import socket_allowed_origins
 
-from flask import Flask
+
+socketio = SocketIO(cors_allowed_origins="*")
 
 
 # application factory
@@ -64,11 +68,16 @@ def create_app(test_config=None):
     def get_current_time():
         return {'time': time.time()}
 
+    @app.route('/shutdown', methods=['GET'])
+    def shutdown():
+        shutdown_server()
+        return 'Server shutting down...'
+
     from . import db
     db.init_app(app)
 
     # Register blueprints with app
-    from trivia.blueprints import questions, games
+    from trivia.blueprints import questions, games, live_game
     app.register_blueprint(questions.bp)
     app.register_blueprint(games.bp)
 
@@ -77,4 +86,14 @@ def create_app(test_config=None):
     CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
+    socketio.init_app(app)  #
+
     return app
+
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+    socketio.stop()

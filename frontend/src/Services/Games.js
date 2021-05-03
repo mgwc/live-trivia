@@ -41,7 +41,6 @@ export function getGameQuestions(gameId) {
 
   return axios.get(`${path()}/games/game/${gameId}`)
     .then(res => {
-      console.log("response to getGameQuestions GET: " + res.data)
       return res.data
     })
     .catch(function (error) {
