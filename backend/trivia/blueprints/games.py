@@ -61,12 +61,12 @@ def game_questions(game_id=1):
             WHERE game_id = ?
             ORDER BY id ASC
         ''', (str(game_id)),).fetchall()
+        current_app.logger.info("num rows selected from db = " + str(len(rows)))
     except sqlite3.Error as e:
         # handle error
         type, value, traceback = sys.exc_info()
-        current_app.logger.info("Caught exception at cur.execute in add_question: {}, {}, {}".format(type, value, traceback))
-        pass
-    current_app.logger.info("num rows selected from db = " + str(len(rows)))
+        current_app.logger.info("Caught exception at cur.execute in game_questions: {}, {}, {}".format(type, value, traceback))
+        return
 
     return jsonify([dict(row) for row in rows])
 
