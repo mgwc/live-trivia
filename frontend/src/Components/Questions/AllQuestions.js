@@ -300,7 +300,6 @@ class AllQuestions extends React.Component {
 
     return (
       <div>
-        <button onClick={this.showAddModal}>Add question</button>
         <AddGameQuestionModal
           data={this.state}
           hideModal={this.showAddToGameModal}
@@ -312,7 +311,19 @@ class AllQuestions extends React.Component {
         <DeletionModal data={this.state} hideModal={this.hideDeleteModal} deleteQuestion={this.deleteQuestion} />
         <EditQuestionModal data={this.state} showEditModal={this.showEditModal} handleSubmit={this.handleEditSubmit}
           initialQuestionText=""/>
-        <TableNav handlePaging={this.handlePaging} />
+
+        <div class="container">
+          <nav class="level">
+            <div class="level-left" style={{marginBottom:20}}>
+              <div class="level-item has-text-centered">
+                <button class="button is-focused" onClick={this.showAddModal}>Add question</button>
+              </div>
+            </div>
+            <div class="level-right">
+              <TableNav handlePaging={this.handlePaging} />
+            </div>
+          </nav>
+        </div>
         {table}
       </div>
     )

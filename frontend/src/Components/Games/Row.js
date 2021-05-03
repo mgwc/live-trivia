@@ -31,7 +31,8 @@ class Row extends React.Component {
     return (
       <tr>
         <td>{this.props.rowData.name}</td>
-        <td><button><Link to={`/manage-games/${this.props.rowData.id}`}>View/Edit</Link></button></td>
+        <td><button class="button"><Link to={`/manage-games/${this.props.rowData.id}`}>View/Edit</Link></button></td>
+        <td><button class="button"><Link to={`/host/${this.props.rowData.id}`}>Launch Live Game</Link></button></td>
         <td><button class="delete" onClick={this.showDeleteModal}></button></td>
       </tr>
     )

@@ -144,11 +144,33 @@ function AllGames() {
 
   return (
     <div>
-      <button onClick={showAddModal}>Add game</button>
       {additionModal}
       {deletionModal}
-      <TableNav handlePaging={handlePaging} />
-      {table}
+      <div class="container" style={{marginBottom:20}}>
+        <nav class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <button class="button is-focused" onClick={showAddModal}>Add Game</button>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <div>
+                <TableNav handlePaging={handlePaging} />
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="container">
+        <nav class="level">
+          <div class="level-item">
+            <div>
+              {table}
+            </div>
+          </div>
+        </nav>
+      </div>
     </div>
   )
 }
