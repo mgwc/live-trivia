@@ -9,6 +9,8 @@ import { getGameQuestions } from "../../Services/Games"
 function HostView(props) {
 
   const [questions, setQuestions] = useState([])
+  const [questionsObject, setQuestionsObject] = useState({})
+  const [selectedQuestions, setSelectedQuestions] = useState({})
   const gameId = props.match.params.gameId
   let socket;
 
@@ -34,9 +36,11 @@ function HostView(props) {
       .then(questions => {
         if (mounted) {  // prevents attempt to set data on unmounted component
           setQuestions(questions)
-          console.log("Questions[0] = ")
-          console.log(questions[0].question_id)
-          // createQuestionsObject()
+          questions.map(question => {
+            setQuestionsObject(questionsObject[`q${question.question_id}`] = question)
+          })
+          let questionsObjectStr = JSON.stringify(questionsObject)
+          console.log("questionsObject = " + questionsObjectStr)
         } else {
           console.log("Component wasn't mounted in fetchGameInfo()")
         }
@@ -46,19 +50,14 @@ function HostView(props) {
 
   function selectQuestion(questionId) {
     console.log("Question " + questionId + " was checked")
-
-
+    let questionsObjectId = `q${questionId}`
+    console.log("questionsObjectId = " + questionsObjectId)
+    let questionInfo = questionsObject[questionsObjectId]
+    console.log("questionInfo = " + questionInfo)
+    console.log("Question info: " + JSON.stringify(questionInfo))
   }
 
-  function submitQuestion(questionId) {
-    // Find and bind the checked question in questions if it exists
-    let question;
-    for (var i = 0; i < questions.length; i++) {
-      if (questions[i].question_id === questionId) {
-        question = JSON.parse(JSON.stringify(questions[i]))
-        console.log("Found the question: ", question)
-      }
-    }
+  function submitQuestion(question) {
     console.log(`submitQuestion received question: ${question}`)
     socket.emit('question', {"gameId": gameId, "question": question})
   }
@@ -68,11 +67,11 @@ function HostView(props) {
       <div class="columns">
         <div class="column">
           <container>
-            <HostQuestionTable rows={questions} selectQuestion={selectQuestion} submitQuestion={submitQuestion} />
+            <HostQuestionTable rows={questions} selectQuestion={selectQuestion} />
           </container>
         </div>
         <div class="column">
-          <p>A column</p>
+          <QuestionForm handleSubmit={submitQuestion} />
         </div>
       </div>
     </section>
